@@ -1,5 +1,7 @@
+import { prototype } from "html-webpack-plugin";
 import "./styles.css";
 import { parse } from "date-fns";
+import { ProvidePlugin } from "webpack";
 
 const Project =  [];
 
@@ -13,8 +15,7 @@ class TodolistData {
         this.priority = priority;
     };
 
-    CreateProject() {
-        const ProjectName = prompt("What is your project ");
+    CreateProject(ProjectName) {
         Project.push(ProjectName);
     };
 };
@@ -42,17 +43,72 @@ class Todolist_CollectData_SaveData extends TodolistData {
 class SaveDataTolocalStorage {
     
     SaveDataTolocalStorage() {
-        localStorage.setItem('Project_Task',JSON.stringify(Project))
+        localStorage.setItem('Project_Task',JSON.stringify(Project));
     };
 
     Retrieve_data_from_localStorage () {
-        const StoredTaskData =  JSON.parse(localStorage.getItem('Project_Task'))
-        localStorage.removeItem('Project_Task')
+        const StoredTaskData =  JSON.parse(localStorage.getItem('Project_Task'));
+        localStorage.removeItem('Project_Task');
 
         if (Array.isArray(StoredTaskData)) {
-            Project.length = 0;
-            Project.push(StoredTaskData)
-        }
+            Project.length = 0;;
+            Project.push(StoredTaskData);
+        };
     };
 };
+
+class DeleteTodolistItems {
+    deleteTask() {
+
+        const deleteTaskUser = prompt("What task do you want to delete?");
+        for (let i = 0; i < this.project.length; i++) {
+            if (Project[i] == deleteTaskUser) {
+                Project.splice(i,1);
+                console.log("Delete Task Successfully");
+                return;
+            } else {
+                console.log("Task not found");
+            };
+            };
+        };
+}
+
+class ShowallTaskinList {
+    ShowAlltask() {
+        console.log(Project)
+    }
+}
+
+class Run_in_CLI extends TodolistData{
+    RunAlllogic() {
+        if (Project.length === 0) {
+            const ProjectName = prompt("Project Name ")
+            this.CreateProject(ProjectName);
+        } else {
+            const CreateTodolistProject = this.CreateProject;
+            const AddTaskToProject = new Todolist_CollectData_SaveData;
+            const DeleteTask = new DeleteTodolistItems;
+            const ShowAllTask = new ShowallTaskinList;
+            const Userinput = prompt("1.Add Task 2.DeleteTask 3.Add Project 4.ShowYourTask (1-4)")
+            if (Userinput === 1) {
+                AddTaskToProject.CollectData_PutData();
+            
+            } if (Userinput === 2) {
+                DeleteTask.deleteTask()
+            } if (Userinput === 3) {
+                CreateTodolistProject()
+            } if (Userinput === 4) {
+                ShowAllTask.ShowAlltask()
+            }
+            
+
+            
+        }
+    }
+}
+
+
+
+
+
 
