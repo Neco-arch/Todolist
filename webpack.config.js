@@ -1,4 +1,3 @@
-// webpack.config.js
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -13,6 +12,11 @@ module.exports = {
     devtool: "eval-source-map",
     devServer: {
         watchFiles: ["./src/template.html"],
+        static: {
+            directory: path.join(__dirname, "dist"),
+        },
+        open: true,
+        hot: true,
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -33,8 +37,12 @@ module.exports = {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: "asset/resource",
             },
-            {
-            },
         ],
+    },
+    resolve: {
+        fallback: {
+            vm: require.resolve("vm-browserify"),
+            os: require.resolve("os-browserify/browser"),
+        },
     },
 };
