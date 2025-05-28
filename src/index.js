@@ -37,8 +37,33 @@ class CreateTodo {
 }
 
 class EditDetailsInTodolist {
-  // To be implemented
-}
+  constructor (ProjectName,TaskName,UserWantToEditPart,NewInformation) {
+    this.ProjectName = ProjectName;
+    this.TaskName = TaskName;
+    this.UserWantToEditPart = UserWantToEditPart
+    this.NewInformation = NewInformation
+  };
+
+  EditDetails() {
+    for (let i = 1 ; i > AllProject.length ; i++) {
+      if (AllProject[i] === this.ProjectName) {
+        const ProjectTask = AllProject[i].tasks
+        for (let i = 1 ; i > ProjectTask.length ; i++) {
+          if (ProjectTask[i].TaskTitle === this.TaskName) {
+            const UserProjectTask = ProjectTask[i]
+            for (let i = 1 ; i > UserProjectTask.length ; i++) {
+              if (UserProjectTask[i] === this.UserWantToEditPart) {
+                UserProjectTask[i] === this.NewInformation
+              } 
+            };
+          };
+        };
+      } else {
+        return
+      }
+    };
+  };
+};
 
 class SaveDataTolocalStorage {
   SaveDataTolocalStorage() {
