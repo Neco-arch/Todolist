@@ -5,7 +5,7 @@ const AllProject = [];
 
 class CreateProjectTodolist {
   constructor(ProjectName) {
-    this.ProjectName = ProjectName;
+    this.ProjectName = ProjectName.trim();
   }
 
   CreateProject() {
@@ -20,50 +20,66 @@ class CreateTodo {
   constructor(TaskTitle, TaskDescription, TaskStatus, TaskDueDate, TaskPriority) {
     this.TaskTitle = TaskTitle;
     this.TaskDescription = TaskDescription;
-    this.Task_Status = TaskStatus;
-    this.Task_DueDate = parse(TaskDueDate, 'dd/MM/yyyy', new Date());
-    this.Task_Priority = TaskPriority;
+    this.TaskStatus = TaskStatus;
+    this.TaskDueDate = parse(TaskDueDate, 'dd/MM/yyyy', new Date());
+    this.TaskPriority = TaskPriority;
   }
 
   CollectData_PutData(ProjectName) {
-    const project = AllProject.find(item => item.name === ProjectName);
+    const project = AllProject.find(
+      item => item.name.trim().toLowerCase() === ProjectName.trim().toLowerCase()
+    );
 
     if (!project) {
-      console.log("Error: Project not found");
+      alert("Error: Project not found");
     } else {
-      project.tasks.push(this);
+      const NewTask = {
+        TaskTitle : this.TaskTitle,
+        TaskDescription : this.TaskDescription,
+        Status : this.TaskStatus,
+        DueDate: this.TaskDueDate,
+        Priority: this.TaskPriority
+};
+
+      project.tasks.push(NewTask);
+      console.log("Task added to project:", ProjectName);
+      console.log("Updated project:", project);
     }
   }
 }
 
 class EditDetailsInTodolist {
-  constructor (ProjectName,TaskName,UserWantToEditPart,NewInformation) {
+  constructor(ProjectName, TaskName, FieldToEdit, NewInformation) {
     this.ProjectName = ProjectName;
     this.TaskName = TaskName;
-    this.UserWantToEditPart = UserWantToEditPart
-    this.NewInformation = NewInformation
-  };
+    this.FieldToEdit = FieldToEdit;
+    this.NewInformation = NewInformation;
+  }
 
   EditDetails() {
-    for (let i = 1 ; i > AllProject.length ; i++) {
-      if (AllProject[i] === this.ProjectName) {
-        const ProjectTask = AllProject[i].tasks
-        for (let i = 1 ; i > ProjectTask.length ; i++) {
-          if (ProjectTask[i].TaskTitle === this.TaskName) {
-            const UserProjectTask = ProjectTask[i]
-            for (let i = 1 ; i > UserProjectTask.length ; i++) {
-              if (UserProjectTask[i] === this.UserWantToEditPart) {
-                UserProjectTask[i] === this.NewInformation
-              } 
-            };
-          };
-        };
-      } else {
-        return
-      }
-    };
-  };
-};
+    const project = AllProject.find(
+      item => item.name.trim().toLowerCase() === this.ProjectName.trim().toLowerCase()
+    );
+
+    if (!project) {
+      alert("Project not found");
+      return;
+    }
+
+    const task = project.tasks.find(t => t.TaskTitle === this.TaskName);
+    if (!task) {
+      alert("Task not found");
+      return;
+    }
+
+    if (this.FieldToEdit in task) {
+      task[this.FieldToEdit] = this.NewInformation;
+      alert("Task updated successfully");
+    } else {
+      alert("Invalid field name");
+    }
+  }
+}
 
 class SaveDataTolocalStorage {
   SaveDataTolocalStorage() {
@@ -88,18 +104,20 @@ class DeleteTodolistItems {
   }
 
   deleteTask() {
-    const project = AllProject.find(p => p.name === this.ProjectName);
+    const project = AllProject.find(
+      p => p.name.trim().toLowerCase() === this.ProjectName.trim().toLowerCase()
+    );
     if (!project) {
-      console.log("Project not found");
+      alert("Project not found");
       return;
     }
 
     const taskIndex = project.tasks.findIndex(task => task.TaskTitle === this.TaskName);
     if (taskIndex !== -1) {
       project.tasks.splice(taskIndex, 1);
-      console.log("Deleted Successfully");
+      alert("Task deleted successfully");
     } else {
-      console.log("Task not found");
+      alert("Task not found");
     }
   }
 }
@@ -111,16 +129,18 @@ class DeleteProject {
 
   DeleteProject() {
     if (AllProject.length <= 1) {
-      console.log("You need at least 1 project in your todo list.");
+      alert("You need at least 1 project in your todo list.");
       return;
     }
 
-    const index = AllProject.findIndex(p => p.name === this.ProjectName);
+    const index = AllProject.findIndex(
+      p => p.name.trim().toLowerCase() === this.ProjectName.trim().toLowerCase()
+    );
     if (index !== -1) {
       AllProject.splice(index, 1);
-      console.log("Project deleted.");
+      alert("Project deleted.");
     } else {
-      console.log("Project not found.");
+      alert("Project not found.");
     }
   }
 }
@@ -128,67 +148,87 @@ class DeleteProject {
 function RunAll() {
   return {
     RunInCLI() {
-      const projectName = prompt("Name of the project:");
-      const createProject = new CreateProjectTodolist(projectName);
+      const initialProject = prompt("Name of the initial project:");
+      const createProject = new CreateProjectTodolist(initialProject);
       createProject.CreateProject();
       console.log(AllProject);
 
-      for (let i = 1; i < 10; i++) {
+      while (true) {
         const UserSelection = prompt(
-          "1.Create New Project  2.Add Task  3.Modify Task  4.Delete Task  5.ShowAllTask 6.Delete Project"
+          "Choose an option:\n1. Create New Project\n2. Add Task\n3. Modify Task\n4. Delete Task\n5. Show All Projects\n6. Delete Project\n0. Exit"
         );
 
-        if (UserSelection === "1") {
-          const NewProjectName = prompt("Name of the project:");
-          const createNewProject = new CreateProjectTodolist(NewProjectName);
-          createNewProject.CreateProject();
-        } 
-        else if (UserSelection === "2") {
-          const numberOfTasks = parseInt(prompt("How many tasks to add?"), 10);
-          for (let j = 0; j < numberOfTasks; j++) {
-            const projectNameForTask = prompt("Project Name to add task to:");
-            const taskTitle = prompt("Task Title:");
-            const taskDescription = prompt("Task Description:");
-            const taskDueDate = prompt("Task Due Date (dd/MM/yyyy):");
-            const taskPriority = prompt("Task Priority (1-3):");
-            const taskStatus = prompt("Task Status (e.g., 'Pending')");
+        if (UserSelection === "0") {
+          alert("Exiting...");
+          break;
+        }
 
-            const task = new CreateTodo(
-              taskTitle,
-              taskDescription,
-              taskStatus,
-              taskDueDate,
-              taskPriority
-            );
-            task.CollectData_PutData(projectNameForTask);
-            alert(AllProject);
+        switch (UserSelection) {
+          case "1": {
+            const NewProjectName = prompt("Enter new project name:");
+            const createNewProject = new CreateProjectTodolist(NewProjectName);
+            createNewProject.CreateProject();
+            break;
           }
-        } 
-        else if (UserSelection === "3") {
-          // TODO: Implement modify task functionality
-        } 
-        else if (UserSelection === "4") {
-          const ProjectName = prompt("What is your Project Name?");
-          const TaskName = prompt("Task you want to delete?");
-          const DeleteTodo = new DeleteTodolistItems(ProjectName, TaskName);
-          DeleteTodo.deleteTask();
-        } 
-        else if (UserSelection === "5") {
-          console.log(AllProject);
-        } 
-        else if (UserSelection === "6") {
-          const ProjectName = prompt("What Project do you want to delete?");
-          const DeleteProjects = new DeleteProject(ProjectName);
-          DeleteProjects.DeleteProject();
-        } 
-        else {
-          alert("Invalid option. Please select a number from 1 to 6.");
+
+          case "2": {
+            const numberOfTasks = parseInt(prompt("How many tasks to add?"), 10);
+            for (let j = 0; j < numberOfTasks; j++) {
+              const projectNameForTask = prompt("Project name to add task to:");
+              const taskTitle = prompt("Task Title:");
+              const taskDescription = prompt("Task Description:");
+              const taskDueDate = prompt("Task Due Date (dd/MM/yyyy):");
+              const taskPriority = prompt("Task Priority (1-3):");
+              const taskStatus = prompt("Task Status (e.g., 'Pending')");
+
+              const task = new CreateTodo(
+                taskTitle,
+                taskDescription,
+                taskStatus,
+                taskDueDate,
+                taskPriority
+              );
+              task.CollectData_PutData(projectNameForTask);
+            }
+            break;
+          }
+
+          case "3": {
+            const ProjectName = prompt("Project name:");
+            const Task = prompt("Task title to edit:");
+            const WhatDetail = prompt("Which field to edit (e.g., TaskTitle, TaskDescription, Task_Status, Task_Priority):");
+            const Newdata = prompt("Enter new value:");
+            const EditDetails = new EditDetailsInTodolist(ProjectName, Task, WhatDetail, Newdata);
+            EditDetails.EditDetails();
+            break;
+          }
+
+          case "4": {
+            const ProjectName = prompt("Project name:");
+            const TaskName = prompt("Task title to delete:");
+            const DeleteTodo = new DeleteTodolistItems(ProjectName, TaskName);
+            DeleteTodo.deleteTask();
+            break;
+          }
+
+          case "5": {
+            console.log(AllProject);
+            alert("Check console for project details");
+            break;
+          }
+
+          case "6": {
+            const ProjectName = prompt("Project name to delete:");
+            const DeleteProjects = new DeleteProject(ProjectName);
+            DeleteProjects.DeleteProject();
+            break;
+          }
+
+          default:
+            alert("Invalid option. Please select a number from 0 to 6.");
         }
       }
     }
   };
 }
 
-
-const Run = RunAll();
-Run.RunInCLI();
