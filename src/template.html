@@ -13,7 +13,7 @@
         <h2>To do list </h2>
         <div class="Top_Part">
             <a href="#"><img src="/Assets/resources/Icons/calendar-check.png" class="Icon_Nav">Today</a>
-            <a href="#"><img src="/Assets/resources/Icons/calendar.png" class="Icon_Nav">Upcoming</a>
+            <a href="#"><img src="/Assets/resources/Icons/calendar.png" class="Icon_Nav">All Task</a>
         </div>
         <div class="Project_Display">
             <div>
@@ -21,9 +21,28 @@
             </div>
         </div>
         <div class="All_Project_Display">
-            <a href="#"><img src="/Assets/resources/Icons/list-box-outline.png" class="Icon_Nav">Upcoming</a>
+            <a href="#"><img src="/Assets/resources/Icons/list-box-outline.png" class="Icon_Nav">Example</a>
         </div>
     </div>
-    <div class="MainPage"></div>
+    <div class="MainPage">
+        <h1 class="Alltaskheading">All Task <img src="/Assets/resources/Icons/plus-box.png" class="AddTaskButton"></h1>
+        <div class="TaskCard">
+            <div class="ToDocard">
+                <input type="checkbox" name="option" class="TickButton">
+                <h2>Example</h2>
+            </div>
+            <div class="ToDocard">
+                <input type="checkbox" name="option" class="TickButton">
+                <h2>Example 2</h2>
+            </div>
+        </div>
+    </div>
+
+    <dialog class="AddTask">
+        <div class="AddTaskDialog">
+        <h2>Add Task</h2>
+        <label>Task Name</label><input type="input">
+        </div>
+    </dialog>
 </body>
 </html>

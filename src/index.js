@@ -1,5 +1,8 @@
 import "./styles.css";
 import { parse } from "date-fns";
+import { Creatediv, CreateButton, CreateH1, CreateH2, CreateImg, CreateParagraph } from "./DomModule";
+
+
 
 const AllProject = [];
 
@@ -122,6 +125,19 @@ class DeleteTodolistItems {
   }
 }
 
+class CreateTaskCard {
+  CreateCard() {
+    const TaskCard = document.querySelector(".TaskCard");
+    const Div = Creatediv(ToDoCard,"TaskCard");
+    const CreateCheckBox = document.createElement("input");
+    CreateCheckBox.type = "checkbox";
+    CreateCheckBox.name = "option";
+    CreateCheckBox.className = "TickButton";
+    Div.appendChild(CreateCheckBox);
+    const H2 = CreateH2(Div,"","Example");
+  }
+}
+
 class DeleteProject {
   constructor(ProjectName) {
     this.ProjectName = ProjectName;
@@ -145,90 +161,5 @@ class DeleteProject {
   }
 }
 
-function RunAll() {
-  return {
-    RunInCLI() {
-      const initialProject = prompt("Name of the initial project:");
-      const createProject = new CreateProjectTodolist(initialProject);
-      createProject.CreateProject();
-      console.log(AllProject);
 
-      while (true) {
-        const UserSelection = prompt(
-          "Choose an option:\n1. Create New Project\n2. Add Task\n3. Modify Task\n4. Delete Task\n5. Show All Projects\n6. Delete Project\n0. Exit"
-        );
-
-        if (UserSelection === "0") {
-          alert("Exiting...");
-          break;
-        }
-
-        switch (UserSelection) {
-          case "1": {
-            const NewProjectName = prompt("Enter new project name:");
-            const createNewProject = new CreateProjectTodolist(NewProjectName);
-            createNewProject.CreateProject();
-            break;
-          }
-
-          case "2": {
-            const numberOfTasks = parseInt(prompt("How many tasks to add?"), 10);
-            for (let j = 0; j < numberOfTasks; j++) {
-              const projectNameForTask = prompt("Project name to add task to:");
-              const taskTitle = prompt("Task Title:");
-              const taskDescription = prompt("Task Description:");
-              const taskDueDate = prompt("Task Due Date (dd/MM/yyyy):");
-              const taskPriority = prompt("Task Priority (1-3):");
-              const taskStatus = prompt("Task Status (e.g., 'Pending')");
-
-              const task = new CreateTodo(
-                taskTitle,
-                taskDescription,
-                taskStatus,
-                taskDueDate,
-                taskPriority
-              );
-              task.CollectData_PutData(projectNameForTask);
-            }
-            break;
-          }
-
-          case "3": {
-            const ProjectName = prompt("Project name:");
-            const Task = prompt("Task title to edit:");
-            const WhatDetail = prompt("Which field to edit (e.g., TaskTitle, TaskDescription, Task_Status, Task_Priority):");
-            const Newdata = prompt("Enter new value:");
-            const EditDetails = new EditDetailsInTodolist(ProjectName, Task, WhatDetail, Newdata);
-            EditDetails.EditDetails();
-            break;
-          }
-
-          case "4": {
-            const ProjectName = prompt("Project name:");
-            const TaskName = prompt("Task title to delete:");
-            const DeleteTodo = new DeleteTodolistItems(ProjectName, TaskName);
-            DeleteTodo.deleteTask();
-            break;
-          }
-
-          case "5": {
-            console.log(AllProject);
-            alert("Check console for project details");
-            break;
-          }
-
-          case "6": {
-            const ProjectName = prompt("Project name to delete:");
-            const DeleteProjects = new DeleteProject(ProjectName);
-            DeleteProjects.DeleteProject();
-            break;
-          }
-
-          default:
-            alert("Invalid option. Please select a number from 0 to 6.");
-        }
-      }
-    }
-  };
-}
 
