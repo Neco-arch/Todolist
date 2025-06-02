@@ -70,9 +70,13 @@ a:hover {
 
 
 .MainPage {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
     flex: 1; 
     padding: 70px;
-    padding-left: 120px;
+    padding-left: 25%;
+    padding-right: 25%;
     background-color: #7089a2;
     color: white;
     overflow: hidden; 
@@ -116,14 +120,18 @@ a:hover {
     display: flex;
     align-items: center;
     gap: 30px;
+    border-radius: 20px;
+}
+.ToDocard:hover {
+    background-color: #5a6f87;
 }
 
 
 .TickButton {
     appearance: none;
     -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     border: 2px solid #333;
     border-radius: 50%;
     background-color: white;
@@ -133,11 +141,14 @@ a:hover {
 }
 
 .TickButton:checked {
-    background-color: green;
-    border-color: green;
+    background-color: black;
+    border-color: #333;
 }
 
 .TickButton:checked::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     content: '';
     position: absolute;
     top: 4px;
@@ -175,4 +186,18 @@ a:hover {
   left: 50%;
   transform: translate(-50%, -50%);
   margin: 0; 
+}
+
+.AddTaskDialog {
+    display: flex;
+    flex-direction: column;
+    gap: 10px   ;
+}
+
+#CreateProject:hover {
+    filter: invert(0.2);
+}
+
+.AddTaskHeading {
+    margin-bottom: 10px ;
 }

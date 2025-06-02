@@ -1,12 +1,12 @@
 import "./styles.css";
 import { parse } from "date-fns";
-import { Creatediv, CreateButton, CreateH1, CreateH2, CreateImg, CreateParagraph } from "./DomModule";
+import {Creatediv,CreateH2} from "./DomModule";
 
 
 
 const AllProject = [];
 
-class CreateProjectTodolist {
+class CreateProject {
   constructor(ProjectName) {
     this.ProjectName = ProjectName.trim();
   }
@@ -16,10 +16,10 @@ class CreateProjectTodolist {
       name: this.ProjectName,
       tasks: []
     });
-  }
-}
+  };
+};
 
-class CreateTodo {
+class CreateTodolist {
   constructor(TaskTitle, TaskDescription, TaskStatus, TaskDueDate, TaskPriority) {
     this.TaskTitle = TaskTitle;
     this.TaskDescription = TaskDescription;
@@ -47,9 +47,9 @@ class CreateTodo {
       project.tasks.push(NewTask);
       console.log("Task added to project:", ProjectName);
       console.log("Updated project:", project);
-    }
-  }
-}
+    };
+  };
+};
 
 class EditDetailsInTodolist {
   constructor(ProjectName, TaskName, FieldToEdit, NewInformation) {
@@ -80,9 +80,9 @@ class EditDetailsInTodolist {
       alert("Task updated successfully");
     } else {
       alert("Invalid field name");
-    }
-  }
-}
+    };
+  };
+};
 
 class SaveDataTolocalStorage {
   SaveDataTolocalStorage() {
@@ -96,15 +96,15 @@ class SaveDataTolocalStorage {
     if (Array.isArray(StoredTaskData)) {
       AllProject.length = 0;
       AllProject.push(...StoredTaskData);
-    }
-  }
-}
+    };
+  };
+};
 
 class DeleteTodolistItems {
   constructor(ProjectName, TaskName) {
     this.ProjectName = ProjectName;
     this.TaskName = TaskName;
-  }
+  };
 
   deleteTask() {
     const project = AllProject.find(
@@ -122,21 +122,8 @@ class DeleteTodolistItems {
     } else {
       alert("Task not found");
     }
-  }
-}
-
-class CreateTaskCard {
-  CreateCard() {
-    const TaskCard = document.querySelector(".TaskCard");
-    const Div = Creatediv(ToDoCard,"TaskCard");
-    const CreateCheckBox = document.createElement("input");
-    CreateCheckBox.type = "checkbox";
-    CreateCheckBox.name = "option";
-    CreateCheckBox.className = "TickButton";
-    Div.appendChild(CreateCheckBox);
-    const H2 = CreateH2(Div,"","Example");
-  }
-}
+  };
+};
 
 class DeleteProject {
   constructor(ProjectName) {
@@ -158,8 +145,73 @@ class DeleteProject {
     } else {
       alert("Project not found.");
     }
+  };
+};
+
+class CreateTaskCard {
+  constructor(taskTitle, parentSelector) {
+    this.taskTitle = taskTitle;
+    this.parentSelector = parentSelector;
+  }
+
+  createCard() {
+    const parent = document.querySelector(".TaskCard");
+
+
+    const cardDiv = Creatediv(parent, "ToDocard");
+
+    const checkBox = document.createElement("input");
+    checkBox.type = "checkbox";
+    checkBox.name = "taskComplete";
+    checkBox.className = "TickButton";
+    cardDiv.appendChild(checkBox);
+    CreateH2(cardDiv, "", this.taskTitle);
+
+    const Image = document.createElement("img");
+    Image.className = "DeleteButton";
+    Image.src = "/Assets/resources/Icons/CloseIcon.png"
+    cardDiv.appendChild(Image)
   }
 }
 
+document.querySelector(".Submit").addEventListener("click", () => {
+  const Dialog = document.querySelector(".AddTask");
+  const TaskName = document.querySelector("#Task_Name");
+  const TaskDescription = document.querySelector("#Task_Description");
+  const TaskStatus = document.querySelector("#Task_Status");
+  const TaskDueDate = document.querySelector("#Task_DueDate");
+  const TaskPriority = document.querySelector("#Task_Priority");
+
+  const Create = new CreateTodolist(TaskName.value, TaskDescription.value, TaskStatus.value, TaskDueDate.value, TaskPriority.value);
+  const CreateCard = new CreateTaskCard(TaskName);
+  TaskName.value = "";
+  TaskDescription.value = "";
+  TaskStatus.value = "";
+  TaskDueDate.value = "";
+  TaskPriority.value = ""
+  CreateCard.createCard();
+  
+
+  Dialog.close(); 
+});
 
 
+document.querySelector("#CancelButton").addEventListener("click" ,() => {
+  const Dialog = document.querySelector(".AddTask");
+  const TaskName = document.querySelector("#Task_Name");
+  const TaskDescription = document.querySelector("#Task_Description");
+  const TaskStatus = document.querySelector("#Task_Status");
+  const TaskDueDate = document.querySelector("#Task_DueDate");
+  const TaskPriority = document.querySelector("#Task_Priority");
+  TaskName.value = "";
+  TaskDescription.value = "";
+  TaskStatus.value = "";
+  TaskDueDate.value = "";
+  TaskPriority.value = ""
+  Dialog.close();
+});
+
+document.querySelector(".AddTaskButton").addEventListener("click", () => {
+  const Dialog = document.querySelector(".AddTask");
+  Dialog.show();
+});

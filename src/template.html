@@ -17,7 +17,7 @@
         </div>
         <div class="Project_Display">
             <div>
-                <h2 class="UniqueH2">Custom Project <img src="/Assets/resources/Icons/plus-box.png" class="Icon_Nav"></h2>
+                <h2 class="UniqueH2">Custom Project <img src="/Assets/resources/Icons/plus-box.png" class="Icon_Nav" id="CreateProject"></h2>
             </div>
         </div>
         <div class="All_Project_Display">
@@ -27,22 +27,31 @@
     <div class="MainPage">
         <h1 class="Alltaskheading">All Task <img src="/Assets/resources/Icons/plus-box.png" class="AddTaskButton"></h1>
         <div class="TaskCard">
-            <div class="ToDocard">
-                <input type="checkbox" name="option" class="TickButton">
-                <h2>Example</h2>
-            </div>
-            <div class="ToDocard">
-                <input type="checkbox" name="option" class="TickButton">
-                <h2>Example 2</h2>
             </div>
         </div>
     </div>
 
-    <dialog class="AddTask">
+    <dialog class="AddTask" >
+        <h2 class="AddTaskHeading">Add Task</h2>
         <div class="AddTaskDialog">
-        <h2>Add Task</h2>
-        <label>Task Name</label><input type="input">
+        <label>Task Name</label><input type="input" required id="Task_Name" value="">
+        <label>Description</label><input type="input" required id="Task_Description" value="">
+        <label>Status</label><select required id="Task_Status" >
+            <option>To do</option>
+            <option>In progress</option>
+            <option>Done</option>
+        </select>
+        <label>DueDate</label><input type="date" required id="Task_DueDate" value="">
+        <label>Priority</label><select required id="Task_Priority">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+        <input type="submit" class="Submit">
+        <button id="CancelButton">Cancel</button>
         </div>
     </dialog>
+
+    <dialog class="DeleteTask"></dialog>
 </body>
 </html>
