@@ -201,3 +201,12 @@ a:hover {
 .AddTaskHeading {
     margin-bottom: 10px ;
 }
+
+.DeleteButton {
+    border-radius: 3px;
+    margin-left: 70%;
+}
+
+.DeleteButton:hover {
+    background-color: #2c3e50;
+}

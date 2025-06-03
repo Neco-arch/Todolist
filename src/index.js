@@ -1,6 +1,8 @@
 import "./styles.css";
 import { parse } from "date-fns";
 import {Creatediv,CreateH2} from "./DomModule";
+import img from "../Assets/resources/Icons/CloseIcon.png";
+
 
 
 
@@ -151,26 +153,45 @@ class DeleteProject {
 class CreateTaskCard {
   constructor(taskTitle, parentSelector) {
     this.taskTitle = taskTitle;
-    this.parentSelector = parentSelector;
   }
 
   createCard() {
-    const parent = document.querySelector(".TaskCard");
+    const parent = document.querySelector(".TaskCard"); 
+    if (!parent) {
+      console.error("Parent element not found");
+      return;
+    }
 
 
-    const cardDiv = Creatediv(parent, "ToDocard");
+    const cardDiv = this.createDiv(parent, "ToDocard");
+
 
     const checkBox = document.createElement("input");
     checkBox.type = "checkbox";
     checkBox.name = "taskComplete";
     checkBox.className = "TickButton";
     cardDiv.appendChild(checkBox);
-    CreateH2(cardDiv, "", this.taskTitle);
 
-    const Image = document.createElement("img");
-    Image.className = "DeleteButton";
-    Image.src = "/Assets/resources/Icons/CloseIcon.png"
-    cardDiv.appendChild(Image)
+
+    this.createH2(cardDiv, this.taskTitle);
+
+    const image = document.createElement("img");
+    image.className = "DeleteButton";
+    image.src = img;
+    cardDiv.appendChild(image);
+  }
+
+  createDiv(parent, className) {
+    const div = document.createElement("div");
+    div.className = className;
+    parent.appendChild(div);
+    return div;
+  }
+
+  createH2(parent, textContent) {
+    const h2 = document.createElement("h2");
+    h2.textContent = textContent;
+    parent.appendChild(h2);
   }
 }
 
@@ -182,18 +203,36 @@ document.querySelector(".Submit").addEventListener("click", () => {
   const TaskDueDate = document.querySelector("#Task_DueDate");
   const TaskPriority = document.querySelector("#Task_Priority");
 
-  const Create = new CreateTodolist(TaskName.value, TaskDescription.value, TaskStatus.value, TaskDueDate.value, TaskPriority.value);
-  const CreateCard = new CreateTaskCard(TaskName);
+  const taskNameValue = TaskName.value.trim();
+  const taskDescriptionValue = TaskDescription.value.trim();
+  const taskStatusValue = TaskStatus.value.trim();
+  const taskDueDateValue = TaskDueDate.value.trim();
+  const taskPriorityValue = TaskPriority.value.trim();
+
+
+  const create = new CreateTodolist(
+    taskNameValue,
+    taskDescriptionValue,
+    taskStatusValue,
+    taskDueDateValue,
+    taskPriorityValue
+  );
+
+
+
+  const createCard = new CreateTaskCard(taskNameValue);
+  createCard.createCard();
+
+
   TaskName.value = "";
   TaskDescription.value = "";
   TaskStatus.value = "";
   TaskDueDate.value = "";
-  TaskPriority.value = ""
-  CreateCard.createCard();
-  
+  TaskPriority.value = "";
 
-  Dialog.close(); 
+  Dialog.close();
 });
+
 
 
 document.querySelector("#CancelButton").addEventListener("click" ,() => {
@@ -214,4 +253,8 @@ document.querySelector("#CancelButton").addEventListener("click" ,() => {
 document.querySelector(".AddTaskButton").addEventListener("click", () => {
   const Dialog = document.querySelector(".AddTask");
   Dialog.show();
+});
+
+document.querySelector(">DeleteButton").addEventListener("click", () => {
+
 });
