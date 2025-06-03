@@ -18,6 +18,7 @@ class CreateProject {
       name: this.ProjectName,
       tasks: []
     });
+    localStorage.setItem('Project_Task', JSON.stringify(AllProject));
   };
 };
 
@@ -47,8 +48,7 @@ class CreateTodolist {
 };
 
       project.tasks.push(NewTask);
-      console.log("Task added to project:", ProjectName);
-      console.log("Updated project:", project);
+      localStorage.setItem('Project_Task', JSON.stringify(AllProject));
     };
   };
 };
@@ -79,6 +79,7 @@ class EditDetailsInTodolist {
 
     if (this.FieldToEdit in task) {
       task[this.FieldToEdit] = this.NewInformation;
+      localStorage.setItem('Project_Task', JSON.stringify(AllProject));
       alert("Task updated successfully");
     } else {
       alert("Invalid field name");
@@ -102,7 +103,7 @@ class SaveDataTolocalStorage {
   };
 };
 
-class DeleteTodolistItems {
+class DeleteTask {
   constructor(ProjectName, TaskName) {
     this.ProjectName = ProjectName;
     this.TaskName = TaskName;
@@ -120,7 +121,7 @@ class DeleteTodolistItems {
     const taskIndex = project.tasks.findIndex(task => task.TaskTitle === this.TaskName);
     if (taskIndex !== -1) {
       project.tasks.splice(taskIndex, 1);
-      alert("Task deleted successfully");
+      localStorage.setItem('Project_Task', JSON.stringify(AllProject));
     } else {
       alert("Task not found");
     }
@@ -143,7 +144,7 @@ class DeleteProject {
     );
     if (index !== -1) {
       AllProject.splice(index, 1);
-      alert("Project deleted.");
+      localStorage.setItem('Project_Task', JSON.stringify(AllProject));
     } else {
       alert("Project not found.");
     }
@@ -191,6 +192,7 @@ class CreateTaskCard {
   createH2(parent, textContent) {
     const h2 = document.createElement("h2");
     h2.textContent = textContent;
+    h2.className = "TaskTitle"
     parent.appendChild(h2);
   }
 }
@@ -255,6 +257,11 @@ document.querySelector(".AddTaskButton").addEventListener("click", () => {
   Dialog.show();
 });
 
-document.querySelector(">DeleteButton").addEventListener("click", () => {
-
+document.body.addEventListener("click", (event) => {
+  if (event.target.classList.contains("DeleteButton")) {
+    console.log("Delete button clicked!");
+    const parent = event.target.parentElement;
+    const TitleName = parent.closest(".TaskTitle")
+    parent.remove(); 
+  }
 });
