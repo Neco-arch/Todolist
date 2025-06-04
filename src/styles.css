@@ -33,7 +33,7 @@ body {
     flex-direction: column;
     background-color: var(--bg-sidebar);
     color: var(--text-light);
-    width: 15%;
+    width: 20%;
     padding: 20px;
     gap: 20px;
     box-shadow: var(--shadow-heavy);
@@ -216,4 +216,21 @@ a:hover {
 
 .DeleteButton:hover {
     background-color: #1a252f;
+}
+
+.DeleteTask {
+    padding: 20px;
+    border: none;
+    border-radius: 8px;
+    width: 300px;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ActionButtons {
+    display: flex;
+    gap: 15px;
 }

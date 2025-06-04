@@ -1,10 +1,6 @@
 import "./styles.css";
-import { parse } from "date-fns";
-import {Creatediv,CreateH2} from "./DomModule";
+import { parse, format } from "date-fns";
 import img from "../Assets/resources/Icons/CloseIcon.png";
-
-
-
 
 const AllProject = [];
 
@@ -19,153 +15,56 @@ class CreateProject {
       tasks: []
     });
     localStorage.setItem('Project_Task', JSON.stringify(AllProject));
-  };
-};
+  }
+}
 
 class CreateTodolist {
   constructor(TaskTitle, TaskDescription, TaskStatus, TaskDueDate, TaskPriority) {
     this.TaskTitle = TaskTitle;
     this.TaskDescription = TaskDescription;
     this.TaskStatus = TaskStatus;
-    this.TaskDueDate = parse(TaskDueDate, 'dd/MM/yyyy', new Date());
+    this.TaskDueDate = TaskDueDate;
     this.TaskPriority = TaskPriority;
   }
 
-  CollectData_PutData(ProjectName) {
-    const project = AllProject.find(
+  CollectData_PutData(ProjectName = "Default") {
+    let project = AllProject.find(
       item => item.name.trim().toLowerCase() === ProjectName.trim().toLowerCase()
     );
 
     if (!project) {
-      alert("Error: Project not found");
-    } else {
-      const NewTask = {
-        TaskTitle : this.TaskTitle,
-        TaskDescription : this.TaskDescription,
-        Status : this.TaskStatus,
-        DueDate: this.TaskDueDate,
-        Priority: this.TaskPriority
-};
-
-      project.tasks.push(NewTask);
-      localStorage.setItem('Project_Task', JSON.stringify(AllProject));
-    };
-  };
-};
-
-class EditDetailsInTodolist {
-  constructor(ProjectName, TaskName, FieldToEdit, NewInformation) {
-    this.ProjectName = ProjectName;
-    this.TaskName = TaskName;
-    this.FieldToEdit = FieldToEdit;
-    this.NewInformation = NewInformation;
-  }
-
-  EditDetails() {
-    const project = AllProject.find(
-      item => item.name.trim().toLowerCase() === this.ProjectName.trim().toLowerCase()
-    );
-
-    if (!project) {
-      alert("Project not found");
-      return;
+      ProjectName = prompt("What is your project name")
+      project = { name: ProjectName, tasks: [] };
+      AllProject.push(project);
     }
 
-    const task = project.tasks.find(t => t.TaskTitle === this.TaskName);
-    if (!task) {
-      alert("Task not found");
-      return;
-    }
-
-    if (this.FieldToEdit in task) {
-      task[this.FieldToEdit] = this.NewInformation;
-      localStorage.setItem('Project_Task', JSON.stringify(AllProject));
-      alert("Task updated successfully");
-    } else {
-      alert("Invalid field name");
+    const NewTask = {
+      TaskTitle: this.TaskTitle,
+      TaskDescription: this.TaskDescription,
+      Status: this.TaskStatus,
+      DueDate: this.TaskDueDate,
+      Priority: this.TaskPriority
     };
-  };
-};
 
-class SaveDataTolocalStorage {
-  SaveDataTolocalStorage() {
+    project.tasks.push(NewTask);
     localStorage.setItem('Project_Task', JSON.stringify(AllProject));
   }
-
-  Retrieve_data_from_localStorage() {
-    const StoredTaskData = JSON.parse(localStorage.getItem('Project_Task'));
-    localStorage.removeItem('Project_Task');
-
-    if (Array.isArray(StoredTaskData)) {
-      AllProject.length = 0;
-      AllProject.push(...StoredTaskData);
-    };
-  };
-};
-
-class DeleteTask {
-  constructor(ProjectName, TaskName) {
-    this.ProjectName = ProjectName;
-    this.TaskName = TaskName;
-  };
-
-  deleteTask() {
-    const project = AllProject.find(
-      p => p.name.trim().toLowerCase() === this.ProjectName.trim().toLowerCase()
-    );
-    if (!project) {
-      alert("Project not found");
-      return;
-    }
-
-    const taskIndex = project.tasks.findIndex(task => task.TaskTitle === this.TaskName);
-    if (taskIndex !== -1) {
-      project.tasks.splice(taskIndex, 1);
-      localStorage.setItem('Project_Task', JSON.stringify(AllProject));
-    } else {
-      alert("Task not found");
-    }
-  };
-};
-
-class DeleteProject {
-  constructor(ProjectName) {
-    this.ProjectName = ProjectName;
-  }
-
-  DeleteProject() {
-    if (AllProject.length <= 1) {
-      alert("You need at least 1 project in your todo list.");
-      return;
-    }
-
-    const index = AllProject.findIndex(
-      p => p.name.trim().toLowerCase() === this.ProjectName.trim().toLowerCase()
-    );
-    if (index !== -1) {
-      AllProject.splice(index, 1);
-      localStorage.setItem('Project_Task', JSON.stringify(AllProject));
-    } else {
-      alert("Project not found.");
-    }
-  };
-};
+}
 
 class CreateTaskCard {
-  constructor(taskTitle, parentSelector) {
+  constructor(taskTitle, dueDate) {
     this.taskTitle = taskTitle;
+    this.dueDate = dueDate; // dd/MM/yyyy
   }
 
   createCard() {
-    const parent = document.querySelector(".TaskCard"); 
+    const parent = document.querySelector(".TaskCard");
     if (!parent) {
       console.error("Parent element not found");
       return;
     }
 
-
     const cardDiv = this.createDiv(parent, "ToDocard");
-
 
     const checkBox = document.createElement("input");
     checkBox.type = "checkbox";
@@ -173,13 +72,39 @@ class CreateTaskCard {
     checkBox.className = "TickButton";
     cardDiv.appendChild(checkBox);
 
-
     this.createH2(cardDiv, this.taskTitle);
 
+    const input = document.createElement("input");
+    input.type = "date";
+    input.className = "Date-input";
+    input.value = format(parse(this.dueDate, "dd/MM/yyyy", new Date()), "yyyy-MM-dd");
+    input.addEventListener("change", () => {
+      const newFormatted = format(
+        parse(input.value, "yyyy-MM-dd", new Date()),
+        "dd/MM/yyyy"
+      );
+      this.updateDueDate(this.taskTitle, newFormatted);
+    });
+    cardDiv.appendChild(input);
+
     const image = document.createElement("img");
-    image.className = "DeleteButton";
     image.src = img;
+    image.id = "DeleteTask";
+    image.className = "DeleteIcon";
     cardDiv.appendChild(image);
+  }
+
+  updateDueDate(taskTitle, newDate) {
+    const project = AllProject.find((p) =>
+      p.tasks.some((task) => task.TaskTitle === taskTitle)
+    );
+    if (!project) return;
+
+    const task = project.tasks.find((task) => task.TaskTitle === taskTitle);
+    if (!task) return;
+
+    task.DueDate = newDate;
+    localStorage.setItem("Project_Task", JSON.stringify(AllProject));
   }
 
   createDiv(parent, className) {
@@ -192,10 +117,11 @@ class CreateTaskCard {
   createH2(parent, textContent) {
     const h2 = document.createElement("h2");
     h2.textContent = textContent;
-    h2.className = "TaskTitle"
+    h2.className = "TaskTitle";
     parent.appendChild(h2);
   }
 }
+
 
 document.querySelector(".Submit").addEventListener("click", () => {
   const Dialog = document.querySelector(".AddTask");
@@ -208,9 +134,8 @@ document.querySelector(".Submit").addEventListener("click", () => {
   const taskNameValue = TaskName.value.trim();
   const taskDescriptionValue = TaskDescription.value.trim();
   const taskStatusValue = TaskStatus.value.trim();
-  const taskDueDateValue = TaskDueDate.value.trim();
+  const taskDueDateValue = format(parse(TaskDueDate.value, "yyyy-MM-dd", new Date()), "dd/MM/yyyy");
   const taskPriorityValue = TaskPriority.value.trim();
-
 
   const create = new CreateTodolist(
     taskNameValue,
@@ -219,12 +144,10 @@ document.querySelector(".Submit").addEventListener("click", () => {
     taskDueDateValue,
     taskPriorityValue
   );
+  create.CollectData_PutData("Default");
 
-
-
-  const createCard = new CreateTaskCard(taskNameValue);
+  const createCard = new CreateTaskCard(taskNameValue, taskDueDateValue);
   createCard.createCard();
-
 
   TaskName.value = "";
   TaskDescription.value = "";
@@ -236,32 +159,39 @@ document.querySelector(".Submit").addEventListener("click", () => {
 });
 
 
-
-document.querySelector("#CancelButton").addEventListener("click" ,() => {
+document.querySelector("#CancelButton").addEventListener("click", () => {
   const Dialog = document.querySelector(".AddTask");
-  const TaskName = document.querySelector("#Task_Name");
-  const TaskDescription = document.querySelector("#Task_Description");
-  const TaskStatus = document.querySelector("#Task_Status");
-  const TaskDueDate = document.querySelector("#Task_DueDate");
-  const TaskPriority = document.querySelector("#Task_Priority");
-  TaskName.value = "";
-  TaskDescription.value = "";
-  TaskStatus.value = "";
-  TaskDueDate.value = "";
-  TaskPriority.value = ""
+  document.querySelector("#Task_Name").value = "";
+  document.querySelector("#Task_Description").value = "";
+  document.querySelector("#Task_Status").value = "";
+  document.querySelector("#Task_DueDate").value = "";
+  document.querySelector("#Task_Priority").value = "";
   Dialog.close();
 });
+
 
 document.querySelector(".AddTaskButton").addEventListener("click", () => {
   const Dialog = document.querySelector(".AddTask");
   Dialog.show();
 });
 
-document.body.addEventListener("click", (event) => {
-  if (event.target.classList.contains("DeleteButton")) {
-    console.log("Delete button clicked!");
-    const parent = event.target.parentElement;
-    const TitleName = parent.closest(".TaskTitle")
-    parent.remove(); 
+
+document.querySelector(".TaskCard").addEventListener("click", (e) => {
+  if (e.target && e.target.id === "DeleteTask") {
+    const card = e.target.closest(".ToDocard");
+    const taskTitle = card.querySelector(".TaskTitle").textContent;
+
+
+    card.remove();
+
+    const project = AllProject.find((p) =>
+      p.tasks.some((task) => task.TaskTitle === taskTitle)
+    );
+    if (!project) return;
+
+    project.tasks = project.tasks.filter((task) => task.TaskTitle !== taskTitle);
+    localStorage.setItem("Project_Task", JSON.stringify(AllProject));
+
+    console.log(`Deleted task: ${taskTitle}`);
   }
 });
