@@ -14,7 +14,7 @@ class CreateProject {
       name: this.ProjectName,
       tasks: []
     });
-    localStorage.setItem('Project_Task', JSON.stringify(AllProject));
+    localStorage.setItem("Project_Task", JSON.stringify(AllProject));
   }
 }
 
@@ -33,7 +33,7 @@ class CreateTodolist {
     );
 
     if (!project) {
-      ProjectName = prompt("What is your project name")
+      ProjectName = prompt("What is your project name?");
       project = { name: ProjectName, tasks: [] };
       AllProject.push(project);
     }
@@ -47,14 +47,14 @@ class CreateTodolist {
     };
 
     project.tasks.push(NewTask);
-    localStorage.setItem('Project_Task', JSON.stringify(AllProject));
+    localStorage.setItem("Project_Task", JSON.stringify(AllProject));
   }
 }
 
 class CreateTaskCard {
   constructor(taskTitle, dueDate) {
     this.taskTitle = taskTitle;
-    this.dueDate = dueDate; // dd/MM/yyyy
+    this.dueDate = dueDate;
   }
 
   createCard() {
@@ -77,12 +77,20 @@ class CreateTaskCard {
     const input = document.createElement("input");
     input.type = "date";
     input.className = "Date-input";
-    input.value = format(parse(this.dueDate, "dd/MM/yyyy", new Date()), "yyyy-MM-dd");
+    if (this.dueDate && typeof this.dueDate === "string") {
+      try {
+        const parsedDate = parse(this.dueDate, "dd/MM/yyyy", new Date());
+        input.value = format(parsedDate, "yyyy-MM-dd");
+      } catch (err) {
+        console.warn("Failed to parse date:", this.dueDate);
+        input.value = "";
+      }
+    } else {
+      input.value = "";
+    }
+
     input.addEventListener("change", () => {
-      const newFormatted = format(
-        parse(input.value, "yyyy-MM-dd", new Date()),
-        "dd/MM/yyyy"
-      );
+      const newFormatted = format(parse(input.value, "yyyy-MM-dd", new Date()), "dd/MM/yyyy");
       this.updateDueDate(this.taskTitle, newFormatted);
     });
     cardDiv.appendChild(input);
@@ -122,6 +130,48 @@ class CreateTaskCard {
   }
 }
 
+class CreateProjectSidebar {
+  // Later
+}
+
+
+
+
+class LoadingData {
+  LoadData() {
+    const storedValue = localStorage.getItem("Project_Task");
+    if (storedValue) {
+      const parsed = JSON.parse(storedValue);
+      AllProject.length = 0;
+      AllProject.push(...parsed);
+    } else {
+      console.log("Data not found");
+      AllProject.length = 0;
+    }
+  }
+
+  LoadTask() {
+    for (let i = 0; i < AllProject.length; i++) {
+      const Tasks = AllProject[i].tasks || [];
+      for (let z = 0; z < Tasks.length; z++) {
+        const TaskName = Tasks[z].TaskTitle;
+        const TaskDueDate = Tasks[z].DueDate;
+        const CreateCard = new CreateTaskCard(TaskName, TaskDueDate);
+        CreateCard.createCard();
+      }
+    }
+  }
+
+  LoadProject() {
+    if (AllProject.length !== 0) {
+
+    } else {
+      const Project_Name = prompt("Project name :");
+      const CreatenewProject = new CreateProject(Project_Name);
+      CreatenewProject.CreateProject();
+    }
+  }
+}
 
 document.querySelector(".Submit").addEventListener("click", () => {
   const Dialog = document.querySelector(".AddTask");
@@ -181,7 +231,6 @@ document.querySelector(".TaskCard").addEventListener("click", (e) => {
     const card = e.target.closest(".ToDocard");
     const taskTitle = card.querySelector(".TaskTitle").textContent;
 
-
     card.remove();
 
     const project = AllProject.find((p) =>
@@ -194,4 +243,11 @@ document.querySelector(".TaskCard").addEventListener("click", (e) => {
 
     console.log(`Deleted task: ${taskTitle}`);
   }
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const LoadData = new LoadingData();
+  LoadData.LoadData();
+  LoadData.LoadTask();
 });
