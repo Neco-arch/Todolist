@@ -1,12 +1,13 @@
 import "./styles.css";
 import { parse, format } from "date-fns";
 import img from "../Assets/resources/Icons/CloseIcon.png";
+import BoxIcon from "../Assets/resources/Icons/list-box-outline.png";
 
 const AllProject = [];
 
 class CreateProject {
   constructor(ProjectName) {
-    this.ProjectName = ProjectName.trim();
+    this.ProjectName = ProjectName
   }
 
   CreateProject() {
@@ -131,7 +132,20 @@ class CreateTaskCard {
 }
 
 class CreateProjectSidebar {
-  // Later
+  constructor(Name) {
+    this.Name = Name
+  }
+
+  CreateSideBar() {
+    const Parent = document.querySelector(".All_Project_Display");
+    const a = document.createElement("a");
+    a.href = "#"
+    const Image = document.createElement("img")
+    Image.src = BoxIcon;
+    Image.className = "Icon_Nav";
+    a.appendChild(Image)
+    Parent.appendChild(a);
+  }
 }
 
 
@@ -168,7 +182,9 @@ class LoadingData {
     } else {
       const Project_Name = prompt("Project name :");
       const CreatenewProject = new CreateProject(Project_Name);
+      const CreateProjectDOM = new CreateProjectSidebar(Project_Name);
       CreatenewProject.CreateProject();
+      CreateProjectDOM.CreateSideBar();
     }
   }
 }
@@ -251,3 +267,25 @@ document.addEventListener("DOMContentLoaded", () => {
   LoadData.LoadData();
   LoadData.LoadTask();
 });
+
+document.querySelector("#CreateProject").addEventListener("click", () => {
+  const AddProject = document.querySelector(".AddProject");
+  AddProject.show()
+})
+
+document.querySelector(".Submit_Project").addEventListener("click", () => {
+  const AddProject = document.querySelector(".AddProject");
+  const Project_Name = document.querySelector("#Project_Name")
+  const CreateNewProject = new CreateProject(Project_Name);
+  const CreateNewProjectDOM = new CreateProjectSidebar(Project_Name);
+  CreateNewProject.CreateProject();
+  CreateNewProjectDOM.CreateSideBar();
+  AddProject.close();
+})
+
+document.querySelector("#CancelButton_Project").addEventListener("click", () => {
+  const AddProject = document.querySelector(".AddProject");
+  const Project_Name = document.querySelector("#Project_Name")
+  Project_Name.value = ""
+  AddProject.close()
+})

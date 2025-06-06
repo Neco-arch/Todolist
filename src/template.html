@@ -20,7 +20,6 @@
             </div>
         </div>
         <div class="All_Project_Display">
-            <a href="#"><img src="/Assets/resources/Icons/list-box-outline.png" class="Icon_Nav">Example</a>
         </div>
     </div>
     <div class="MainPage">
@@ -30,25 +29,44 @@
         </div>
     </div>
 
-    <dialog class="AddTask" >
-        <h2 class="AddTaskHeading">Add Task</h2>
-        <div class="AddTaskDialog">
-        <label>Task Name</label><input type="input" required id="Task_Name" value="">
-        <label>Description</label><input type="input" required id="Task_Description" value="">
-        <label>Status</label><select required id="Task_Status" >
-            <option>To do</option>
-            <option>In progress</option>
-            <option>Done</option>
-        </select>
-        <label>DueDate</label><input type="date" required id="Task_DueDate" value="">
-        <label>Priority</label><select required id="Task_Priority">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-        </select>
-        <input type="submit" class="Submit">
-        <button id="CancelButton">Cancel</button>
-        </div>
-    </dialog>
+<dialog class="AddTask">
+  <h2 class="AddTaskHeading">Add Task</h2>
+  <form method="dialog" id="AddTaskForm">
+    <div class="AddTaskDialog">
+      <label>Task Name</label>
+      <input type="text" id="Task_Name" required>
+      <label>Description</label>
+      <input type="text" id="Task_Description">
+      <label>Status</label>
+      <select required id="Task_Status">
+        <option value="">-- Select --</option>
+        <option>To do</option>
+        <option>In progress</option>
+        <option>Done</option>
+      </select>
+      <label>Due Date</label>
+      <input type="date" id="Task_DueDate" required>
+      <label>Priority</label>
+      <select id="Task_Priority">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+      </select>
+      <button type="submit" class="Submit">Submit</button>
+      <button type="button" id="CancelButton">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="AddProject" open>
+    <h2>Add Project</h2>
+    <form action="" class="ProjectForm">
+        <label>ProjectName</label>
+        <input type="text" id="Project_Name" required>
+        <button type="submit" class="Submit_Project">Submit</button>
+        <button type="button" id="CancelButton_Project">Cancel</button>
+    </form>
+</dialog>
+
 </body>
 </html>

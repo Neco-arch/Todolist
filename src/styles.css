@@ -175,7 +175,7 @@ a:hover {
     gap: 40px;
 }
 
-.AddTask {
+.AddTask , .AddProject {
     padding: 20px;
     border: none;
     border-radius: 8px;
@@ -233,4 +233,10 @@ a:hover {
 .ActionButtons {
     display: flex;
     gap: 15px;
+}
+
+.ProjectForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
