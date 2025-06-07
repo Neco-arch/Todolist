@@ -7,7 +7,7 @@ const AllProject = [];
 
 class CreateProject {
   constructor(ProjectName) {
-    this.ProjectName = ProjectName
+    this.ProjectName = ProjectName;
   }
 
   CreateProject() {
@@ -20,7 +20,8 @@ class CreateProject {
 }
 
 class CreateTodolist {
-  constructor(TaskTitle, TaskDescription, TaskStatus, TaskDueDate, TaskPriority) {
+  constructor(TaskProject, TaskTitle, TaskDescription, TaskStatus, TaskDueDate, TaskPriority) {
+    this.TaskProject = TaskProject;
     this.TaskTitle = TaskTitle;
     this.TaskDescription = TaskDescription;
     this.TaskStatus = TaskStatus;
@@ -28,13 +29,13 @@ class CreateTodolist {
     this.TaskPriority = TaskPriority;
   }
 
-  CollectData_PutData(ProjectName = "Default") {
+  CollectData_PutData() {
     let project = AllProject.find(
-      item => item.name.trim().toLowerCase() === ProjectName.trim().toLowerCase()
+      item => item.name.trim().toLowerCase() === this.TaskProject.trim().toLowerCase()
     );
 
     if (!project) {
-      ProjectName = prompt("What is your project name?");
+      const ProjectName = prompt("What is your project name?");
       project = { name: ProjectName, tasks: [] };
       AllProject.push(project);
     }
@@ -78,6 +79,7 @@ class CreateTaskCard {
     const input = document.createElement("input");
     input.type = "date";
     input.className = "Date-input";
+
     if (this.dueDate && typeof this.dueDate === "string") {
       try {
         const parsedDate = parse(this.dueDate, "dd/MM/yyyy", new Date());
@@ -94,6 +96,7 @@ class CreateTaskCard {
       const newFormatted = format(parse(input.value, "yyyy-MM-dd", new Date()), "dd/MM/yyyy");
       this.updateDueDate(this.taskTitle, newFormatted);
     });
+
     cardDiv.appendChild(input);
 
     const image = document.createElement("img");
@@ -133,23 +136,27 @@ class CreateTaskCard {
 
 class CreateProjectSidebar {
   constructor(Name) {
-    this.Name = Name
+    this.Name = Name;
   }
 
   CreateSideBar() {
     const Parent = document.querySelector(".All_Project_Display");
     const a = document.createElement("a");
-    a.href = "#"
-    const Image = document.createElement("img")
+    const h2 = document.createElement("h3");
+
+    a.href = "#";
+    a.className = "ChangePage";
+    h2.textContent = this.Name;
+
+    const Image = document.createElement("img");
     Image.src = BoxIcon;
     Image.className = "Icon_Nav";
-    a.appendChild(Image)
+
+    a.appendChild(Image);
+    a.appendChild(h2);
     Parent.appendChild(a);
   }
 }
-
-
-
 
 class LoadingData {
   LoadData() {
@@ -177,9 +184,7 @@ class LoadingData {
   }
 
   LoadProject() {
-    if (AllProject.length !== 0) {
-
-    } else {
+    if (AllProject.length === 0) {
       const Project_Name = prompt("Project name :");
       const CreatenewProject = new CreateProject(Project_Name);
       const CreateProjectDOM = new CreateProjectSidebar(Project_Name);
@@ -189,6 +194,20 @@ class LoadingData {
   }
 }
 
+// ==== EVENT LISTENERS ==== //
+
+document.addEventListener("DOMContentLoaded", () => {
+  const LoadDataInstance = new LoadingData();
+  LoadDataInstance.LoadData();
+  LoadDataInstance.LoadTask();
+
+  for (let i = 0; i < AllProject.length; i++) {
+    const name = AllProject[i].name;
+    const CreateProjectS = new CreateProjectSidebar(name);
+    CreateProjectS.CreateSideBar();
+  }
+});
+
 document.querySelector(".Submit").addEventListener("click", () => {
   const Dialog = document.querySelector(".AddTask");
   const TaskName = document.querySelector("#Task_Name");
@@ -196,23 +215,26 @@ document.querySelector(".Submit").addEventListener("click", () => {
   const TaskStatus = document.querySelector("#Task_Status");
   const TaskDueDate = document.querySelector("#Task_DueDate");
   const TaskPriority = document.querySelector("#Task_Priority");
+  const Project_Selector = document.querySelector(".Project_Selector");
 
-  const taskNameValue = TaskName.value.trim();
+  const taskTitleValue = TaskName.value.trim();
+  const projectSelectorValue = Project_Selector.value;
   const taskDescriptionValue = TaskDescription.value.trim();
   const taskStatusValue = TaskStatus.value.trim();
   const taskDueDateValue = format(parse(TaskDueDate.value, "yyyy-MM-dd", new Date()), "dd/MM/yyyy");
   const taskPriorityValue = TaskPriority.value.trim();
 
   const create = new CreateTodolist(
-    taskNameValue,
+    projectSelectorValue,
+    taskTitleValue,
     taskDescriptionValue,
     taskStatusValue,
     taskDueDateValue,
     taskPriorityValue
   );
-  create.CollectData_PutData("Default");
+  create.CollectData_PutData();
 
-  const createCard = new CreateTaskCard(taskNameValue, taskDueDateValue);
+  const createCard = new CreateTaskCard(taskTitleValue, taskDueDateValue);
   createCard.createCard();
 
   TaskName.value = "";
@@ -224,7 +246,6 @@ document.querySelector(".Submit").addEventListener("click", () => {
   Dialog.close();
 });
 
-
 document.querySelector("#CancelButton").addEventListener("click", () => {
   const Dialog = document.querySelector(".AddTask");
   document.querySelector("#Task_Name").value = "";
@@ -235,12 +256,19 @@ document.querySelector("#CancelButton").addEventListener("click", () => {
   Dialog.close();
 });
 
-
 document.querySelector(".AddTaskButton").addEventListener("click", () => {
   const Dialog = document.querySelector(".AddTask");
-  Dialog.show();
-});
+  const Project_Selector = document.querySelector(".Project_Selector");
 
+  Project_Selector.innerHTML = ""; // Clear old options
+  for (let i = 0; i < AllProject.length; i++) {
+    const option = document.createElement("option");
+    option.textContent = AllProject[i].name;
+    Project_Selector.appendChild(option);
+  }
+
+  Dialog.showModal();
+});
 
 document.querySelector(".TaskCard").addEventListener("click", (e) => {
   if (e.target && e.target.id === "DeleteTask") {
@@ -261,31 +289,33 @@ document.querySelector(".TaskCard").addEventListener("click", (e) => {
   }
 });
 
-
-document.addEventListener("DOMContentLoaded", () => {
-  const LoadData = new LoadingData();
-  LoadData.LoadData();
-  LoadData.LoadTask();
-});
-
 document.querySelector("#CreateProject").addEventListener("click", () => {
   const AddProject = document.querySelector(".AddProject");
-  AddProject.show()
-})
+  AddProject.showModal();
+});
 
 document.querySelector(".Submit_Project").addEventListener("click", () => {
   const AddProject = document.querySelector(".AddProject");
-  const Project_Name = document.querySelector("#Project_Name")
-  const CreateNewProject = new CreateProject(Project_Name);
-  const CreateNewProjectDOM = new CreateProjectSidebar(Project_Name);
+  const Project_Name = document.querySelector("#Project_Name");
+  const projectNameValue = Project_Name.value.trim();
+
+  if (projectNameValue === "") {
+    alert("Project name cannot be empty.");
+    return;
+  }
+
+  const CreateNewProject = new CreateProject(projectNameValue);
+  const CreateNewProjectDOM = new CreateProjectSidebar(projectNameValue);
   CreateNewProject.CreateProject();
   CreateNewProjectDOM.CreateSideBar();
+
+  Project_Name.value = "";
   AddProject.close();
-})
+});
 
 document.querySelector("#CancelButton_Project").addEventListener("click", () => {
   const AddProject = document.querySelector(".AddProject");
-  const Project_Name = document.querySelector("#Project_Name")
-  Project_Name.value = ""
-  AddProject.close()
-})
+  const Project_Name = document.querySelector("#Project_Name");
+  Project_Name.value = "";
+  AddProject.close();
+});
