@@ -1,10 +1,14 @@
+// === IMPORTS === //
 import "./styles.css";
 import { parse, format } from "date-fns";
 import img from "../Assets/resources/Icons/CloseIcon.png";
 import BoxIcon from "../Assets/resources/Icons/list-box-outline.png";
+import EditIcon from "../Assets/resources/Icons/hammer-wrench.svg"
 
 const AllProject = [];
+let currentlyEditingTask = { projectIndex: null, taskIndex: null };
 
+// === CLASSES === //
 class CreateProject {
   constructor(ProjectName) {
     this.ProjectName = ProjectName;
@@ -54,23 +58,33 @@ class CreateTodolist {
 }
 
 class CreateTaskCard {
-  constructor(taskTitle, dueDate) {
+  constructor(taskTitle, dueDate, TaskPriority) {
     this.taskTitle = taskTitle;
     this.dueDate = dueDate;
+    this.TaskPriority = TaskPriority;
   }
 
   createCard() {
     const parent = document.querySelector(".TaskCard");
-    if (!parent) {
-      console.error("Parent element not found");
-      return;
-    }
+    if (!parent) return;
 
     const cardDiv = this.createDiv(parent, "ToDocard");
 
+const priority = Number(this.TaskPriority);
+
+if (priority === 1) {
+  cardDiv.style.backgroundColor = "red";
+  cardDiv.style.color = "white";
+} else if (priority === 2) {
+  cardDiv.style.backgroundColor = "green";
+  cardDiv.style.color = "white";
+} else if (priority === 3) {
+  cardDiv.style.backgroundColor = "blue";
+  cardDiv.style.color = "white";
+}
+
     const checkBox = document.createElement("input");
     checkBox.type = "checkbox";
-    checkBox.name = "taskComplete";
     checkBox.className = "TickButton";
     cardDiv.appendChild(checkBox);
 
@@ -84,12 +98,9 @@ class CreateTaskCard {
       try {
         const parsedDate = parse(this.dueDate, "dd/MM/yyyy", new Date());
         input.value = format(parsedDate, "yyyy-MM-dd");
-      } catch (err) {
-        console.warn("Failed to parse date:", this.dueDate);
+      } catch {
         input.value = "";
       }
-    } else {
-      input.value = "";
     }
 
     input.addEventListener("change", () => {
@@ -99,23 +110,28 @@ class CreateTaskCard {
 
     cardDiv.appendChild(input);
 
+    const EditandDelete = document.createElement("div");
+    EditandDelete.className = "EditandDeleteDiv";
+
+    const EditTask = document.createElement("img");
+    EditTask.src = EditIcon;
+    EditTask.className = "EditButton";
+    EditandDelete.appendChild(EditTask);
+
     const image = document.createElement("img");
     image.src = img;
     image.id = "DeleteTask";
     image.className = "DeleteIcon";
-    cardDiv.appendChild(image);
+    EditandDelete.appendChild(image);
+
+    cardDiv.appendChild(EditandDelete);
   }
 
   updateDueDate(taskTitle, newDate) {
-    const project = AllProject.find((p) =>
-      p.tasks.some((task) => task.TaskTitle === taskTitle)
-    );
+    const project = AllProject.find(p => p.tasks.some(task => task.TaskTitle === taskTitle));
     if (!project) return;
-
-    const task = project.tasks.find((task) => task.TaskTitle === taskTitle);
-    if (!task) return;
-
-    task.DueDate = newDate;
+    const task = project.tasks.find(task => task.TaskTitle === taskTitle);
+    if (task) task.DueDate = newDate;
     localStorage.setItem("Project_Task", JSON.stringify(AllProject));
   }
 
@@ -161,23 +177,15 @@ class CreateProjectSidebar {
 class LoadingData {
   LoadData() {
     const storedValue = localStorage.getItem("Project_Task");
-    if (storedValue) {
-      const parsed = JSON.parse(storedValue);
-      AllProject.length = 0;
-      AllProject.push(...parsed);
-    } else {
-      console.log("Data not found");
-      AllProject.length = 0;
-    }
+    AllProject.length = 0;
+    if (storedValue) AllProject.push(...JSON.parse(storedValue));
   }
 
   LoadTask() {
     for (let i = 0; i < AllProject.length; i++) {
       const Tasks = AllProject[i].tasks || [];
       for (let z = 0; z < Tasks.length; z++) {
-        const TaskName = Tasks[z].TaskTitle;
-        const TaskDueDate = Tasks[z].DueDate;
-        const CreateCard = new CreateTaskCard(TaskName, TaskDueDate);
+        const CreateCard = new CreateTaskCard(Tasks[z].TaskTitle, Tasks[z].DueDate, Tasks[z].Priority);
         CreateCard.createCard();
       }
     }
@@ -194,8 +202,7 @@ class LoadingData {
   }
 }
 
-// ==== EVENT LISTENERS ==== //
-
+// === EVENT LISTENERS === //
 document.addEventListener("DOMContentLoaded", () => {
   const LoadDataInstance = new LoadingData();
   LoadDataInstance.LoadData();
@@ -208,114 +215,61 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-document.querySelector(".Submit").addEventListener("click", () => {
-  const Dialog = document.querySelector(".AddTask");
-  const TaskName = document.querySelector("#Task_Name");
-  const TaskDescription = document.querySelector("#Task_Description");
-  const TaskStatus = document.querySelector("#Task_Status");
-  const TaskDueDate = document.querySelector("#Task_DueDate");
-  const TaskPriority = document.querySelector("#Task_Priority");
-  const Project_Selector = document.querySelector(".Project_Selector");
-
-  const taskTitleValue = TaskName.value.trim();
-  const projectSelectorValue = Project_Selector.value;
-  const taskDescriptionValue = TaskDescription.value.trim();
-  const taskStatusValue = TaskStatus.value.trim();
-  const taskDueDateValue = format(parse(TaskDueDate.value, "yyyy-MM-dd", new Date()), "dd/MM/yyyy");
-  const taskPriorityValue = TaskPriority.value.trim();
-
-  const create = new CreateTodolist(
-    projectSelectorValue,
-    taskTitleValue,
-    taskDescriptionValue,
-    taskStatusValue,
-    taskDueDateValue,
-    taskPriorityValue
-  );
-  create.CollectData_PutData();
-
-  const createCard = new CreateTaskCard(taskTitleValue, taskDueDateValue);
-  createCard.createCard();
-
-  TaskName.value = "";
-  TaskDescription.value = "";
-  TaskStatus.value = "";
-  TaskDueDate.value = "";
-  TaskPriority.value = "";
-
-  Dialog.close();
-});
-
-document.querySelector("#CancelButton").addEventListener("click", () => {
-  const Dialog = document.querySelector(".AddTask");
-  document.querySelector("#Task_Name").value = "";
-  document.querySelector("#Task_Description").value = "";
-  document.querySelector("#Task_Status").value = "";
-  document.querySelector("#Task_DueDate").value = "";
-  document.querySelector("#Task_Priority").value = "";
-  Dialog.close();
-});
-
-document.querySelector(".AddTaskButton").addEventListener("click", () => {
-  const Dialog = document.querySelector(".AddTask");
-  const Project_Selector = document.querySelector(".Project_Selector");
-
-  Project_Selector.innerHTML = ""; // Clear old options
-  for (let i = 0; i < AllProject.length; i++) {
-    const option = document.createElement("option");
-    option.textContent = AllProject[i].name;
-    Project_Selector.appendChild(option);
-  }
-
-  Dialog.showModal();
-});
-
 document.querySelector(".TaskCard").addEventListener("click", (e) => {
-  if (e.target && e.target.id === "DeleteTask") {
+  if (e.target.id === "DeleteTask") {
     const card = e.target.closest(".ToDocard");
     const taskTitle = card.querySelector(".TaskTitle").textContent;
 
-    card.remove();
-
-    const project = AllProject.find((p) =>
-      p.tasks.some((task) => task.TaskTitle === taskTitle)
-    );
+    const project = AllProject.find(p => p.tasks.some(task => task.TaskTitle === taskTitle));
     if (!project) return;
 
-    project.tasks = project.tasks.filter((task) => task.TaskTitle !== taskTitle);
+    project.tasks = project.tasks.filter(task => task.TaskTitle !== taskTitle);
     localStorage.setItem("Project_Task", JSON.stringify(AllProject));
 
-    console.log(`Deleted task: ${taskTitle}`);
+    card.remove();
+  }
+
+  if (e.target.classList.contains("EditButton")) {
+    const card = e.target.closest(".ToDocard");
+    const taskTitle = card.querySelector(".TaskTitle").textContent;
+
+    for (let i = 0; i < AllProject.length; i++) {
+      const index = AllProject[i].tasks.findIndex(t => t.TaskTitle === taskTitle);
+      if (index !== -1) {
+        const task = AllProject[i].tasks[index];
+        currentlyEditingTask = { projectIndex: i, taskIndex: index };
+
+        document.querySelector("#Edit_Task_Name").value = task.TaskTitle;
+        document.querySelector("#Edit_Task_Description").value = task.TaskDescription;
+        document.querySelector("#Edit_Task_Status").value = task.Status;
+        document.querySelector("#Edit_Task_DueDate").value = format(parse(task.DueDate, "dd/MM/yyyy", new Date()), "yyyy-MM-dd");
+        document.querySelector("#Edit_Task_Priority").value = task.Priority;
+
+        document.querySelector(".EditTaskDialog").showModal();
+        break;
+      }
+    }
   }
 });
 
-document.querySelector("#CreateProject").addEventListener("click", () => {
-  const AddProject = document.querySelector(".AddProject");
-  AddProject.showModal();
+document.querySelector(".Submit_Edit").addEventListener("click", () => {
+  const i = currentlyEditingTask.projectIndex;
+  const j = currentlyEditingTask.taskIndex;
+  const task = AllProject[i].tasks[j];
+
+  task.TaskTitle = document.querySelector("#Edit_Task_Name").value.trim();
+  task.TaskDescription = document.querySelector("#Edit_Task_Description").value.trim();
+  task.Status = document.querySelector("#Edit_Task_Status").value.trim();
+  task.DueDate = format(parse(document.querySelector("#Edit_Task_DueDate").value, "yyyy-MM-dd", new Date()), "dd/MM/yyyy");
+  task.Priority = document.querySelector("#Edit_Task_Priority").value.trim();
+
+  localStorage.setItem("Project_Task", JSON.stringify(AllProject));
+  document.querySelector(".EditTaskDialog").close();
+
+  document.querySelector(".TaskCard").innerHTML = "";
+  new LoadingData().LoadTask();
 });
 
-document.querySelector(".Submit_Project").addEventListener("click", () => {
-  const AddProject = document.querySelector(".AddProject");
-  const Project_Name = document.querySelector("#Project_Name");
-  const projectNameValue = Project_Name.value.trim();
-
-  if (projectNameValue === "") {
-    alert("Project name cannot be empty.");
-    return;
-  }
-
-  const CreateNewProject = new CreateProject(projectNameValue);
-  const CreateNewProjectDOM = new CreateProjectSidebar(projectNameValue);
-  CreateNewProject.CreateProject();
-  CreateNewProjectDOM.CreateSideBar();
-
-  Project_Name.value = "";
-  AddProject.close();
-});
-
-document.querySelector("#CancelButton_Project").addEventListener("click", () => {
-  const AddProject = document.querySelector(".AddProject");
-  const Project_Name = document.querySelector("#Project_Name");
-  Project_Name.value = "";
-  AddProject.close();
+document.querySelector(".Cancel_Edit").addEventListener("click", () => {
+  document.querySelector(".EditTaskDialog").close();
 });

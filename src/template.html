@@ -71,6 +71,25 @@
         <button type="button" id="CancelButton_Project">Cancel</button>
     </form>
 </dialog>
+<dialog class="EditTaskDialog">
+  <div class="EditTaskHeading">Edit Task</div>
+  <input id="Edit_Task_Name" placeholder="Task Title" />
+  <input id="Edit_Task_Description" placeholder="Task Description" />
+  <select required id="Edit_Task_Status">
+    <option value="">-- Select --</option>
+    <option>To do</option>
+    <option>In progress</option>
+    <option>Done</option>
+  </select>
+  <input id="Edit_Task_DueDate" type="date" />
+  <select id="Edit_Task_Priority">
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+  </select>
+  <button class="Submit_Edit">Save Changes</button>
+  <button class="Cancel_Edit">Cancel</button>
+</dialog>
 
 </body>
 </html>

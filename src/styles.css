@@ -240,3 +240,24 @@ a:hover {
     flex-direction: column;
     gap: 10px;
 }
+
+.EditButton {
+    width: 30px;
+    filter: invert(1);
+}
+
+.EditButton:hover {
+    filter: invert(0.5);
+}
+
+.EditandDeleteDiv {
+    display: flex;
+    gap: 1.25rem; /* 20px */
+    justify-content: center;
+    align-items: center;
+    margin-left: 30%;
+}
+
+#DeleteTask:hover {
+    filter: invert(0.5);
+}
