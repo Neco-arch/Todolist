@@ -251,3 +251,7 @@ a:hover {
 .EditIcon {
     width: 25px;
 }
+
+#All_Task {
+    font-weight: bold;
+}
