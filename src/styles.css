@@ -241,23 +241,13 @@ a:hover {
     gap: 10px;
 }
 
-.EditButton {
-    width: 30px;
-    filter: invert(1);
-}
-
-.EditButton:hover {
-    filter: invert(0.5);
-}
-
-.EditandDeleteDiv {
+.CombineDiv {
     display: flex;
-    gap: 1.25rem; /* 20px */
-    justify-content: center;
     align-items: center;
-    margin-left: 30%;
+    gap: 20px;
+    margin-left: auto;
 }
 
-#DeleteTask:hover {
-    filter: invert(0.5);
+.EditIcon {
+    width: 25px;
 }

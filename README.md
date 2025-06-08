@@ -1,6 +1,6 @@
 # Todolist
-Project Title: SmartTask – A Smarter Way to Stay Organized
-Description:
+
+Project Title: SmartTask – A Smarter Way to Stay Organized Description:
 
 SmartTask is a dynamic and user-friendly to-do list application built with modern JavaScript (ES6+) and modular design principles. It empowers users to create, manage, and prioritize their daily tasks and projects with ease. Featuring a sleek UI, responsive task cards, and persistent local storage, SmartTask ensures your workflow is always organized—even after you close the browser.
 
