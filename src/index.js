@@ -1,9 +1,8 @@
-// === IMPORTS === //
 import "./styles.css";
 import { parse, format } from "date-fns";
-import img from "../Assets/resources/Icons/CloseIcon.png";
-import BoxIcon from "../Assets/resources/Icons/list-box-outline.png";
-import EditIcon from "../Assets/resources/Icons/hammer-wrench.svg"
+import img from "./Assets/resources/Icons/CloseIcon.png";
+import BoxIcon from "./Assets/resources/Icons/list-box-outline.png";
+import EditIcon from "./Assets/resources/Icons/hammer-wrench.svg"
 
 const AllProject = [];
 let currentlyEditingTask = { projectIndex: null, taskIndex: null };

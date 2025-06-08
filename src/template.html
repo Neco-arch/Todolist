@@ -1,95 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To do list</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To Do List</title>
+  
+  <link rel="stylesheet" href="styles.css" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <div class="SideBar">
-        <h2>To do list </h2>
-        <div class="Top_Part">
-            <a><img src="/Assets/resources/Icons/calendar.png" class="Icon_Nav">All Task</a>
-        </div>
-        <div class="Project_Display">
-            <div>
-                <h2 class="UniqueH2">Custom Project <img src="/Assets/resources/Icons/plus-box.png" class="Icon_Nav" id="CreateProject"></h2>
-            </div>
-        </div>
-        <div class="All_Project_Display">
-        </div>
+  <div class="SideBar">
+    <h2>To Do List</h2>
+    <div class="Top_Part">
+      <a><img src="Assets/resources/Icons/calendar.png" class="Icon_Nav" />All Task</a>
     </div>
-    <div class="MainPage">
-        <h1 class="Alltaskheading">All Task <img src="/Assets/resources/Icons/plus-box.png" class="AddTaskButton"></h1>
-        <div class="TaskCard">
-            </div>
-        </div>
+    <div class="Project_Display">
+      <div>
+        <h2 class="UniqueH2">
+          Custom Project 
+          <img src="Assets/resources/Icons/plus-box.png" class="Icon_Nav" id="CreateProject" />
+        </h2>
+      </div>
     </div>
+    <div class="All_Project_Display"></div>
+  </div>
 
-<dialog class="AddTask">
-  <h2 class="AddTaskHeading">Add Task</h2>
-  <form method="dialog" id="AddTaskForm">
-    <div class="AddTaskDialog">
-      <label>Project</label>
-      <select class="Project_Selector">
+  <div class="MainPage">
+    <h1 class="Alltaskheading">
+      All Task 
+      <img src="Assets/resources/Icons/plus-box.png" class="AddTaskButton" />
+    </h1>
+    <div class="TaskCard"></div>
+  </div>
 
-      </select>
-      <label>Task Name</label>
-      <input type="text" id="Task_Name" required>
-      <label>Description</label>
-      <input type="text" id="Task_Description">
-      <label>Status</label>
-      <select required id="Task_Status">
-        <option value="">-- Select --</option>
-        <option>To do</option>
-        <option>In progress</option>
-        <option>Done</option>
-      </select>
-      <label>Due Date</label>
-      <input type="date" id="Task_DueDate" required>
-      <label>Priority</label>
-      <select id="Task_Priority">
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-      </select>
-      <button type="submit" class="Submit">Submit</button>
-      <button type="button" id="CancelButton">Cancel</button>
-    </div>
-  </form>
-</dialog>
 
-<dialog class="AddProject">
-    <h2>Add Project</h2>
-    <form action="" class="ProjectForm">
-        <label>ProjectName</label>
-        <input type="text" id="Project_Name" required>
-        <button type="submit" class="Submit_Project">Submit</button>
-        <button type="button" id="CancelButton_Project">Cancel</button>
+  <dialog class="AddTask">
+    <h2 class="AddTaskHeading">Add Task</h2>
+    <form method="dialog" id="AddTaskForm">
+      <div class="AddTaskDialog">
+        <label>Project</label>
+        <select class="Project_Selector"></select>
+
+        <label>Task Name</label>
+        <input type="text" id="Task_Name" required />
+
+        <label>Description</label>
+        <input type="text" id="Task_Description" />
+
+        <label>Status</label>
+        <select required id="Task_Status">
+          <option value="">-- Select --</option>
+          <option>To do</option>
+          <option>In progress</option>
+          <option>Done</option>
+        </select>
+
+        <label>Due Date</label>
+        <input type="date" id="Task_DueDate" required />
+
+        <label>Priority</label>
+        <select id="Task_Priority">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+        </select>
+
+        <button type="submit" class="Submit">Submit</button>
+        <button type="button" id="CancelButton">Cancel</button>
+      </div>
     </form>
-</dialog>
-<dialog class="EditTaskDialog">
-  <div class="EditTaskHeading">Edit Task</div>
-  <input id="Edit_Task_Name" placeholder="Task Title" />
-  <input id="Edit_Task_Description" placeholder="Task Description" />
-  <select required id="Edit_Task_Status">
-    <option value="">-- Select --</option>
-    <option>To do</option>
-    <option>In progress</option>
-    <option>Done</option>
-  </select>
-  <input id="Edit_Task_DueDate" type="date" />
-  <select id="Edit_Task_Priority">
-    <option>1</option>
-    <option>2</option>
-    <option>3</option>
-  </select>
-  <button class="Submit_Edit">Save Changes</button>
-  <button class="Cancel_Edit">Cancel</button>
-</dialog>
+  </dialog>
 
+
+  <dialog class="AddProject">
+    <h2>Add Project</h2>
+    <form class="ProjectForm">
+      <label>Project Name</label>
+      <input type="text" id="Project_Name" required />
+      <button type="submit" class="Submit_Project">Submit</button>
+      <button type="button" id="CancelButton_Project">Cancel</button>
+    </form>
+  </dialog>
+
+  <!-- Edit Task Dialog -->
+  <dialog class="EditTaskDialog">
+    <div class="EditTaskHeading">Edit Task</div>
+    <input id="Edit_Task_Name" placeholder="Task Title" />
+    <input id="Edit_Task_Description" placeholder="Task Description" />
+    <select required id="Edit_Task_Status">
+      <option value="">-- Select --</option>
+      <option>To do</option>
+      <option>In progress</option>
+      <option>Done</option>
+    </select>
+    <input id="Edit_Task_DueDate" type="date" />
+    <select id="Edit_Task_Priority">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+    </select>
+    <button class="Submit_Edit">Save Changes</button>
+    <button class="Cancel_Edit">Cancel</button>
+  </dialog>
+
+  <script src="index.js"></script>
 </body>
 </html>
