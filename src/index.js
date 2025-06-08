@@ -1,7 +1,7 @@
 import "./styles.css";
 import { parse, format } from "date-fns";
-import img from "../Assets/resources/Icons/CloseIcon.png";
-import BoxIcon from "../Assets/resources/Icons/list-box-outline.png";
+import img from "./Assets/resources/Icons/CloseIcon.png";
+import BoxIcon from "./Assets/resources/Icons/list-box-outline.png";
 
 const AllProject = [];
 
