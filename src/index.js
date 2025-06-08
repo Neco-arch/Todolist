@@ -2,6 +2,8 @@ import "./styles.css";
 import { parse, format } from "date-fns";
 import img from "./Assets/resources/Icons/CloseIcon.png";
 import BoxIcon from "./Assets/resources/Icons/list-box-outline.png";
+import EditIcon from "./Assets/resources/Icons/hammer-wrench.svg";
+
 
 const AllProject = [];
 
@@ -99,11 +101,22 @@ class CreateTaskCard {
 
     cardDiv.appendChild(input);
 
+    const CombineDiv = document.createElement("div");
+    CombineDiv.className = "CombineDiv";
+
+    const EditIcons = document.createElement("img")
+    EditIcons.src = EditIcon;
+    EditIcons.className = "EditIcon";
+
     const image = document.createElement("img");
     image.src = img;
     image.id = "DeleteTask";
     image.className = "DeleteIcon";
-    cardDiv.appendChild(image);
+
+    CombineDiv.appendChild(EditIcons);
+    CombineDiv.appendChild(image);
+    cardDiv.appendChild(CombineDiv)
+
   }
 
   updateDueDate(taskTitle, newDate) {
@@ -286,6 +299,50 @@ document.querySelector(".TaskCard").addEventListener("click", (e) => {
     localStorage.setItem("Project_Task", JSON.stringify(AllProject));
 
     console.log(`Deleted task: ${taskTitle}`);
+  }
+});
+
+document.querySelector(".TaskCard").addEventListener("click", (e) => {
+  if (e.target && e.target.classList.contains("EditIcon")) {
+    const card = e.target.closest(".ToDocard");
+    const taskTitle = card.querySelector(".TaskTitle").textContent;
+
+    const project = AllProject.find((p) =>
+      p.tasks.some((task) => task.TaskTitle === taskTitle)
+    );
+    if (!project) return;
+
+    const task = project.tasks.find((t) => t.TaskTitle === taskTitle);
+    if (!task) return;
+
+
+    const dialog = document.querySelector(".AddTask");
+    dialog.showModal();
+
+    document.querySelector("#Task_Name").value = task.TaskTitle;
+    document.querySelector("#Task_Description").value = task.TaskDescription;
+    document.querySelector("#Task_Status").value = task.Status;
+    document.querySelector("#Task_DueDate").value = format(
+      parse(task.DueDate, "dd/MM/yyyy", new Date()),
+      "yyyy-MM-dd"
+    );
+    document.querySelector("#Task_Priority").value = task.Priority;
+
+    const Project_Selector = document.querySelector(".Project_Selector");
+    Project_Selector.innerHTML = "";
+    AllProject.forEach((proj) => {
+      const option = document.createElement("option");
+      option.textContent = proj.name;
+      Project_Selector.appendChild(option);
+    });
+    Project_Selector.value = project.name;
+
+    // Remove original card from DOM
+    card.remove();
+
+    // Remove task from project
+    project.tasks = project.tasks.filter((t) => t.TaskTitle !== taskTitle);
+    localStorage.setItem("Project_Task", JSON.stringify(AllProject));
   }
 });
 
